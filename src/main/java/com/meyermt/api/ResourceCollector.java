@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  */
 public class ResourceCollector {
 
-    private final static String REDIRECTS_URI = "www/redirects.defs";
+    private final static String REDIRECTS_URI = "www/redirect.defs";
     private Map<String, String> redirects = new HashMap<>();
 
     public ResourceCollector() {
@@ -30,12 +30,11 @@ public class ResourceCollector {
 
     private void loadRedirects() {
         Path redirectPath = Paths.get(REDIRECTS_URI);
-        Pattern pattern = Pattern.compile("(.*) (.*)");
+        String regex = "(?<requested>.+) (?<forward>.+)";
         try {
             redirects = Files.readAllLines(redirectPath).stream()
                     .map(line -> {
-                        Matcher matcher = pattern.matcher(line);
-                        return new AbstractMap.SimpleEntry<String, String>(matcher.group(0), matcher.group(1));
+                        return new AbstractMap.SimpleEntry<String, String>(line.replaceAll(regex, "${requested}"), line.replaceAll(regex, "${forward}"));
                     })
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         } catch (IOException e) {

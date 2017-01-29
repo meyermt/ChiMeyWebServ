@@ -62,8 +62,7 @@ public class ChiMeyHandler implements Runnable {
 
     private String parseResource(String header) {
         //this matcher group should match resource, e.g. "GET some/resource HTTP/1.1"
-        Pattern pattern = Pattern.compile(".* (.*) .*");
-        Matcher matcher = pattern.matcher(header);
-        return matcher.group();
+        String regex = ".+ (?<resource>.+) .+";
+        return header.replaceAll(regex, "${resource}");
     }
 }

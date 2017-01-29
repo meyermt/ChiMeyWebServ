@@ -1,5 +1,6 @@
 package com.meyermt.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -22,7 +23,7 @@ public class ChiMeyServer {
             System.out.println("Illegal arguments. Should be run with arguments: --serverPort <desired port number>.");
             System.exit(1);
         }
-        System.out.println("your line separator now is: " + System.getProperty("line.separator"));
+        System.setProperty("line.separator", "\r\n");
         runServer(port);
     }
 
