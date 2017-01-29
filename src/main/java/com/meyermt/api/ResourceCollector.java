@@ -24,7 +24,8 @@ public class ResourceCollector {
     }
 
     public String collectResource(String resource) {
-
+        System.out.println("retrieving the resource: " + resource);
+        return null;
     }
 
     private void loadRedirects() {
