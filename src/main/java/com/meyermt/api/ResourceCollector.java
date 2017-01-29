@@ -1,5 +1,6 @@
 package com.meyermt.api;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -7,8 +8,6 @@ import java.nio.file.Paths;
 import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -18,6 +17,7 @@ public class ResourceCollector {
 
     private final static String REDIRECTS_URI = "www/redirect.defs";
     private Map<String, String> redirects = new HashMap<>();
+    private HttpResponseCreator responseCreator = new HttpResponseCreator();
 
     public ResourceCollector() {
         loadRedirects();
@@ -25,17 +25,26 @@ public class ResourceCollector {
 
     public String collectResource(String resource) {
         System.out.println("retrieving the resource: " + resource);
-        return null;
+        File requestedFile = new File(resource);
+        if (redirects.containsKey(resource)) {
+            // send a 301 redirect
+            responseCreator.create301(resource);
+        } else if (requestedFile.isFile()) {
+            // retrieve the file
+            // determine mime
+            responseCreator.create200(resource, contents);
+        } else {
+            // return a file not found
+            responseCreator.create404(resource);
+        }
     }
 
     private void loadRedirects() {
         Path redirectPath = Paths.get(REDIRECTS_URI);
-        String regex = "(?<requested>.+) (?<forward>.+)";
+        String regex = "(?<requested>.+) (?<redirect>.+)";
         try {
             redirects = Files.readAllLines(redirectPath).stream()
-                    .map(line -> {
-                        return new AbstractMap.SimpleEntry<String, String>(line.replaceAll(regex, "${requested}"), line.replaceAll(regex, "${forward}"));
-                    })
+                    .map(line ->  new AbstractMap.SimpleEntry<String, String>(line.replaceAll(regex, "${requested}"), line.replaceAll(regex, "${redirect}")))
                     .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
         } catch (IOException e) {
             e.printStackTrace();

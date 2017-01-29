@@ -42,6 +42,7 @@ public class ChiMeyHandler implements Runnable {
                 ResourceCollector collector = new ResourceCollector();
                 collector.collectResource(parseResource(headers.get(0)));
             } else {
+                //need to add a return for a 403 here
                 output.println("can't handle that");
             }
             client.close();
