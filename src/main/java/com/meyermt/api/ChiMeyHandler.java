@@ -1,9 +1,6 @@
 package com.meyermt.api;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -35,17 +32,20 @@ public class ChiMeyHandler implements Runnable {
             String clientInput;
             List<String> headers = new ArrayList<>();
             while(!(clientInput = input.readLine()).equals("")) {
-                //output.println("header: " + clientInput);
                 headers.add(clientInput);
             }
-            if (isMethodValid(headers.get(0))) {
-                ResourceCollector collector = new ResourceCollector();
-                String response = collector.collectResource(parseResource(headers.get(0)));
-                System.out.println("sending response: " + response);
-                output.println(response);
+            HttpResponseCreator responseCreator = new HttpResponseCreator();
+            String resource = parseResource(headers.get(0));
+            // if the regex doesn't pick up a resource, that signals a bad request that cannot be processed
+            if (resource.equals("")) {
+                output.println(responseCreator.create403(resource));
             } else {
-                //need to add a return for a 403 here
-                output.println("can't handle that");
+                if (isMethodValid(headers.get(0))) {
+                    respondToValidRequest(output, responseCreator, resource, headers.get(0));
+                } else {
+                    // if it was not a GET or HEAD, will return a 403
+                    output.println(responseCreator.create403(resource));
+                }
             }
             client.close();
         } catch (IOException e) {
@@ -53,6 +53,19 @@ public class ChiMeyHandler implements Runnable {
             System.out.println("Hit an error reading or writing to client.");
         }
 
+    }
+
+    private void respondToValidRequest(PrintWriter output, HttpResponseCreator responseCreator, String resource, String reqHeader) throws IOException {
+        ResourceCollector collector = new ResourceCollector();
+        if (collector.resourceMoved(resource)) {
+            String newLocation = collector.getNewLocation(resource);
+            output.println(responseCreator.create301(newLocation));
+        } else if (collector.resourceExists(resource)){
+            File requestedFile = collector.collectResource(resource);
+            client.getOutputStream().write(responseCreator.create200(requestedFile, resource, reqHeader));
+        } else {
+            output.println(responseCreator.create404(resource));
+        }
     }
 
     private boolean isMethodValid(String methodString) {

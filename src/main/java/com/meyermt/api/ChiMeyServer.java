@@ -33,7 +33,7 @@ public class ChiMeyServer {
     private static void runServer(int port) {
         try {
             ServerSocket server = new ServerSocket(port);
-            //neverending loop, we could put in
+            // neverending loop
             System.out.println("Server started. To stop server press CTRL + C");
             while (true) {
                 Socket client = server.accept();

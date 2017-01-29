@@ -11,36 +11,70 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
+ * Collects file resources to help determine which response the handler should choose.
  * Created by michaelmeyer on 1/28/17.
  */
 public class ResourceCollector {
 
     private final static String REDIRECTS_URI = "www/redirect.defs";
     private Map<String, String> redirects = new HashMap<>();
-    private HttpResponseCreator responseCreator = new HttpResponseCreator();
+    private static String DOC_ROOT = "www";
 
+    /**
+     * Instantiates a new Resource collector. The redirects files is loaded each time an instance of this is created.
+     */
     public ResourceCollector() {
         loadRedirects();
     }
 
-    public String collectResource(String resource) {
-        System.out.println("retrieving the resource: " + resource);
-        File requestedFile = new File(resource);
+    /**
+     * Collect resource file.
+     *
+     * @param resource the requested resource
+     * @return the requested resource's file object
+     */
+    public File collectResource(String resource) {
+        return new File(DOC_ROOT + resource);
+    }
+
+    /**
+     * Resource moved boolean. Indicates whether or not this resource has been moved by checking with the redirects file.
+     *
+     * @param resource the requested resource
+     * @return the boolean indicating whether it has been moved
+     */
+    public boolean resourceMoved(String resource) {
         if (redirects.containsKey(resource)) {
-            // send a 301 redirect
-            String newLocation = redirects.get(resource);
-            return responseCreator.create301(newLocation);
-        } else if (requestedFile.isFile()) {
-            // retrieve the file
-            // determine mime
-            //responseCreator.create200(resource, contents);
-            return null;
+            return true;
         } else {
-            // return a file not found
-            return responseCreator.create404(resource);
+            return false;
         }
     }
 
+    /**
+     * Gets new location for a moved resource. Should be used in tandem with resourceMoved method.
+     *
+     * @param resource the requested resource
+     * @return the new location of the resource
+     */
+    public String getNewLocation(String resource) {
+        String newLocation = redirects.get(resource);
+        return newLocation;
+    }
+
+    /**
+     * Resource exists boolean. Indicates if the resource exists in the file directory as a file.
+     *
+     * @param resource the requested resource
+     * @return the boolean indicating its existence
+     */
+    public boolean resourceExists(String resource) {
+        return new File(DOC_ROOT + resource).isFile();
+    }
+
+    /*
+        Loads the redirect.defs file. Uses some regex-ing to map the entries to a map.
+     */
     private void loadRedirects() {
         Path redirectPath = Paths.get(REDIRECTS_URI);
         String regex = "(?<requested>.+) (?<redirect>.+)";
