@@ -23,7 +23,6 @@ public class ChiMeyServer {
             System.out.println("Illegal arguments. Should be run with arguments: --serverPort <desired port number>.");
             System.exit(1);
         }
-        System.setProperty("line.separator", "\r\n");
         runServer(port);
     }
 

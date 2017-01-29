@@ -4,8 +4,6 @@ import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * Basic handler for the ChiMeyServer. Services one client's request and afterwards closes the connection
@@ -24,6 +22,10 @@ public class ChiMeyHandler implements Runnable {
         this.client = client;
     }
 
+    /*
+        Connection with client as well as main control for responses handled here. Responds to invalid requests
+        and hands off valid ones to respondToValidRequest method.
+     */
     @Override
     public void run() {
         try {
@@ -55,6 +57,9 @@ public class ChiMeyHandler implements Runnable {
 
     }
 
+    /*
+        Chooses responses for all valid requests
+     */
     private void respondToValidRequest(PrintWriter output, HttpResponseCreator responseCreator, String resource, String reqHeader) throws IOException {
         ResourceCollector collector = new ResourceCollector();
         if (collector.resourceMoved(resource)) {
@@ -68,6 +73,9 @@ public class ChiMeyHandler implements Runnable {
         }
     }
 
+    /*
+        Checks if method is one that is currently served
+     */
     private boolean isMethodValid(String methodString) {
         if (methodString.startsWith("GET") || methodString.startsWith("HEAD")) {
             return true;
@@ -76,6 +84,9 @@ public class ChiMeyHandler implements Runnable {
         }
     }
 
+    /*
+        Extracts the resource from the first header line
+     */
     private String parseResource(String header) {
         //this matcher group should match resource, e.g. "GET some/resource HTTP/1.1"
         String regex = ".+ (?<resource>.+) .+";
