@@ -28,14 +28,16 @@ public class ResourceCollector {
         File requestedFile = new File(resource);
         if (redirects.containsKey(resource)) {
             // send a 301 redirect
-            responseCreator.create301(resource);
+            String newLocation = redirects.get(resource);
+            return responseCreator.create301(newLocation);
         } else if (requestedFile.isFile()) {
             // retrieve the file
             // determine mime
-            responseCreator.create200(resource, contents);
+            //responseCreator.create200(resource, contents);
+            return null;
         } else {
             // return a file not found
-            responseCreator.create404(resource);
+            return responseCreator.create404(resource);
         }
     }
 
