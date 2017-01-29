@@ -36,7 +36,6 @@ public class ChiMeyServer {
             System.out.println("Server started. To stop server press CTRL + C");
             while (true) {
                 Socket client = server.accept();
-                System.out.println("starting a new client thread");
                 new Thread(new ChiMeyHandler(client)).start();
             }
         } catch(IOException e) {
