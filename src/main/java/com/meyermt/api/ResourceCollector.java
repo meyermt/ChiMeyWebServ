@@ -21,7 +21,7 @@ public class ResourceCollector {
     private static String DOC_ROOT = "www";
 
     /**
-     * Instantiates a new Resource collector. The redirects files is loaded each time an instance of this is created.
+     * Instantiates a new Resource collector. The redirects file is loaded each time an instance of this is created.
      */
     public ResourceCollector() {
         loadRedirects();
