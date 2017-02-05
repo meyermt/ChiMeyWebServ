@@ -17,3 +17,9 @@ may choose whichever port number works for you.
 ## Additional Information
 
 * The web server only accepts GET and HEAD requests
+* The web server only supports the following MIME types:
+** text/plain
+** text/html
+** application/pdf
+** image/png
+** image/jpeg
