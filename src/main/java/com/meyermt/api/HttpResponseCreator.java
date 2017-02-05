@@ -29,10 +29,18 @@ public class HttpResponseCreator {
     // supported extensions
     private final static String PLAIN_EXT = "txt";
     private final static String HTML_EXT = "html";
+    private final static String HTM_EXT = "htm";
+    private final static String HTMLS_EXT = "htmls";
+    private final static String HTX_EXT = "htx";
+    private final static String SHTML_EXT = "shtml";
     private final static String PDF_EXT = "pdf";
     private final static String PNG_EXT = "png";
-    private final static String JPEG_EXT = "jpg";
-    private final static String JPEG_EXT2 = "jpeg";
+    private final static String X_PNG_EXT = "x-png";
+    private final static String JPG_EXT = "jpg";
+    private final static String JPEG_EXT = "jpeg";
+    private final static String JPE_EXT = "jpe";
+    private final static String JFIF_EXT = "jfif";
+    private final static String JFIF_TBNL_EXT = "jfif-tbnl";
 
     // http methods and their header descriptions
     private final static String OK = "200 OK";
@@ -160,10 +168,18 @@ public class HttpResponseCreator {
     private void loadMimeMap() {
         mimeMap.put(PLAIN_EXT, PLAIN_MIME);
         mimeMap.put(HTML_EXT, HTML_MIME);
+        mimeMap.put(HTM_EXT, HTML_MIME);
+        mimeMap.put(HTMLS_EXT, HTML_MIME);
+        mimeMap.put(HTX_EXT, HTML_MIME);
+        mimeMap.put(SHTML_EXT, HTML_MIME);
         mimeMap.put(PDF_EXT, PDF_MIME);
         mimeMap.put(PNG_EXT, PNG_MIME);
+        mimeMap.put(X_PNG_EXT, PNG_MIME);
         mimeMap.put(JPEG_EXT, JPEG_MIME);
-        mimeMap.put(JPEG_EXT2, JPEG_MIME);
+        mimeMap.put(JPG_EXT, JPEG_MIME);
+        mimeMap.put(JPE_EXT, JPEG_MIME);
+        mimeMap.put(JFIF_EXT, JPEG_MIME);
+        mimeMap.put(JFIF_TBNL_EXT, JPEG_MIME);
     }
     /*
         Retrieve file contents for GET 200 responses.
