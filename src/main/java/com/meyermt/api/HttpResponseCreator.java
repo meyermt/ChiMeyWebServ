@@ -158,7 +158,6 @@ public class HttpResponseCreator {
      */
     private String determineMime(File requestedFile) {
         String ext = requestedFile.getAbsolutePath().replaceAll(mimeRegEx, "${ext}").toLowerCase();
-        System.out.println("looking for ext: " + ext);
         return mimeMap.getOrDefault(ext, HTML_MIME);
     }
 
