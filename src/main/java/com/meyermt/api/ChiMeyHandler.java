@@ -62,7 +62,6 @@ public class ChiMeyHandler implements Runnable {
      */
     private void respondToValidRequest(PrintWriter output, HttpResponseCreator responseCreator, String resource, String reqHeader) throws IOException {
         ResourceCollector collector = new ResourceCollector();
-        System.out.println("resource is: " + resource);
         if (collector.resourceMoved(resource)) {
             String newLocation = collector.getNewLocation(resource);
             output.println(responseCreator.create301(newLocation));
