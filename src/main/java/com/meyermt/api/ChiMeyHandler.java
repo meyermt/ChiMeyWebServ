@@ -62,10 +62,11 @@ public class ChiMeyHandler implements Runnable {
      */
     private void respondToValidRequest(PrintWriter output, HttpResponseCreator responseCreator, String resource, String reqHeader) throws IOException {
         ResourceCollector collector = new ResourceCollector();
+        System.out.println("resource is: " + resource);
         if (collector.resourceMoved(resource)) {
             String newLocation = collector.getNewLocation(resource);
             output.println(responseCreator.create301(newLocation));
-        } else if (collector.resourceExists(resource)){
+        } else if (collector.resourceExists(resource) && !resource.equals("/redirect.defs")){
             File requestedFile = collector.collectResource(resource);
             client.getOutputStream().write(responseCreator.create200(requestedFile, resource, reqHeader));
         } else {
